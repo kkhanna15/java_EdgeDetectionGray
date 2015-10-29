@@ -27,11 +27,11 @@ public class Image extends JFrame {
         super( imageFile );
         
         // convert imageFile into a BufferedImage object
-        ImageDecoder input = ImageFile.createImageDecoder(imageFile);
-        image = input.decodeAsBufferedImage();
-        //image = ImageIO.read(new File(imageFile));
-        System.out.println(BufferedImage.TYPE_INT_RGB);
-        if( image.getType() != BufferedImage.TYPE_INT_RGB )
+        //ImageDecoder input = ImageFile.createImageDecoder(imageFile);
+        //image = input.decodeAsBufferedImage();
+        image = ImageIO.read(new File(imageFile));
+        //System.out.println(BufferedImage.TYPE_3BYTE_BGR);
+        if( image.getType() != BufferedImage.TYPE_3BYTE_BGR)
         {
             System.out.println("Image not color. Exiting...");
             System.exit(0);
@@ -70,7 +70,7 @@ public class Image extends JFrame {
     } // end of method
   
     /**
-     * Display this histogram on screen.
+     * Display this image on screen.
      * @param where
      * @param title 
      */
@@ -98,23 +98,30 @@ public class Image extends JFrame {
         int in_imgWidth = image.getWidth();
         int in_imgHeight = image.getHeight();
         int i,j;
+        Raster in_raster = image.getRaster();
         BufferedImage out_img = new BufferedImage(in_imgWidth, in_imgHeight, 
         BufferedImage.TYPE_BYTE_GRAY);
-        
+        WritableRaster out_raster = (WritableRaster)out_img.getRaster();
         for(j = 0; j < in_imgHeight; j++)
         {
             for(i = 0; i < in_imgWidth; i++)
             {
-                int rgb = image.getRGB(i, j);
+                /*int rgb = image.getRGB(i, j);
                 int alpha = (rgb >> 24) & 0xFF;
                 int red = (rgb >> 16) & 0xFF;
                 int green = (rgb >> 8) & 0xFF;
                 int blue = (rgb & 0xFF);
                 int grayLevel = (red + green + blue)/3;
                 int gray = (alpha << 24)|(grayLevel << 16)|(grayLevel << 8)|grayLevel; 
-                out_img.setRGB(i, j, gray);
+                System.out.println(gray);
+                out_img.setRGB(i, j, gray);*/
+                float gray = (in_raster.getSample(i, j, 0)+
+                        in_raster.getSample(i, j, 1)+
+                        in_raster.getSample(i, j, 2))/3;
+                out_raster.setSample(i, j, 0, gray);
             }
         }
+        out_img.setData(out_raster);
         image = out_img;
         //SaveImage(out_img,"color");
     }// end of method

@@ -24,8 +24,6 @@ import javax.imageio.ImageIO;
  */
 public class EdgeDetectionGray extends JFrame {
     
-    private BufferedImage image;
-    private ViewWithROI view;
     public EdgeDetectionGray(String imageFile) 
             throws IOException, ImageDecoderException, OperationException 
     {
@@ -41,6 +39,12 @@ public class EdgeDetectionGray extends JFrame {
             testImage.display( new Point(0,0), args[0] );
             testImage.ConvertToGray();
             testImage.Save("gray");
+            SobelMask test = new SobelMask("gray.jpg");
+            test.display(new Point(200,200), "gray","gray.jpg");
+            test.display(new Point(300,200), "gradient X","GradientX.jpg");
+            test.display(new Point(400,200), "gradient Y","GradientY.jpg");
+            test.display(new Point(500,200), "gradient XY","Magnitude.jpg");
+            test.display(new Point(600,200), "phase","Phase.jpg");
             }
       catch (Exception e) {
         System.err.println(e);
